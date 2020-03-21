@@ -1,0 +1,360 @@
+---
+layout: post
+title: CentOS + Mac + Nginx
+date: 2020-03-05 15:20:25.000000000 +09:00
+---
+
+
+@[toc]
+###### 01. 使用Mac自带ssh连接工具OpenSSH连接远程CentOS
+
+```shell
+ ssh root@120.132.5.215
+```
+###### 02. 输入密码
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030509265034.png)
+###### 03. 安装Nginx需要yum，查看先
+```shelll
+yum
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305092928198.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+###### 04. yum存在。查看yum版本命令
+```shell
+yum -v
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305093139679.png)
+###### 05. 安装pcre*
+`-y`表示同意，prec*的库是Nginx必须的依赖
+```shell
+yum -y install pcre*
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305093956582.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030509411622.png)
+###### 06. 安装OpenSSL的依赖
+```shell
+ yum -y install openssl*
+ ```
+ ![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030509433329.png)
+ ![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030509435681.png)
+ ###### 07. 创建存放Nginx源码的目录
+ ```shell
+ mkdir nginx
+ ```
+ ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305094708584.png)
+###### 08.  进入该目录
+```shell
+cd nginx/
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030509492481.png)
+###### 09. 查看nginx的绝对路径
+```shell
+pwd
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305095045957.png)
+###### 10. 下载nginx
+.tar.gz是Linux的一种压缩格式
+```shell
+wget http://nginx.org/download/nginx-1.12.2.tar.gz
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305100310270.png)
+###### 11. 查看make指令
+下载后，编译nginx，并安装。nginx是用C语言写的，所以我们可以通过make指令对它进行编译，然后使用make install进行安装，貌似Node.js本质也是C语言实现的，也有部分Cpp
+```shell
+make
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305100821269.png)
+make指令存在，makefile是make编译源码的入口文件
+###### 12. 查看gcc指令
+```shell
+gcc
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305101205169.png)
+gcc存在
+
+###### 13. 查看ningx目录情况
+```shell
+ll
+```
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305102144540.png)
+###### 14. 解压nginx
+```shell
+tar -zxvf nginx-1.12.2.tar.gz 
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305102622161.png)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305102805778.png)
+解压完毕
+###### 15. 进入解压目录
+```shell
+cd nginx-1.12.2/
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305102950616.png)
+
+###### 16. 查看目录结构
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305103045559.png)
+configure是可执行文件，因为头部带了- x
+在CentOS中执行文件是`./`的方式来执行
+或者使用`sh `
+通常`./`会多一些
+```shell
+./configure
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305103602826.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305103627408.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+配置生效
+###### 17. 编译nginx
+```shell
+make -j4
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305103919654.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305103936492.png)
+编译完成
+###### 18. 查看目录
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305104030896.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+
+
+###### 19. 将Nginx安装到CentOS中
+```shell
+make install
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305104229563.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+###### 20. 执行nginx指令
+```shell
+nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305104350671.png)
+nginx指令不存在
+
+
+###### 21. 查看nginx在CentOS是否已经生成
+```shell
+/usr/local/nginx/sbin/nginx -t
+```
+`-t` 是直接读取配置文件
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305104626341.png)
+已经生成，说明Nginx在CentOS中已经安装成功，但是无法直接`nginx`命令
+
+
+###### 22. 进入/usr/bin/目录下
+```shell
+cd /usr/bin/
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305105135139.png)
+
+
+###### 23. 看出usr/bin目录有哪些可直接执行的命令
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030510524470.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305105306442.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+试下`zdiff`命令
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305105448885.png)
+
+###### 24. 使得nginx命令生效
+> 类似将nginx加到系统环境变量中，如在win中配置jdk，使得java命令生效
+
+最后的单词是命令，执行该单词就是执行前面的文件
+```shell
+ln -s /usr/local/nginx/sbin/nginx nginx
+```
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305105859354.png)
+
+###### 25. 查看nginx命令配置是否成功
+```shell
+ll nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030511023352.png)
+指向成功nginx可执行文件成功
+###### 26. 回到root根目录
+```shell
+cd
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305110724531.png)
+pwd看下本目录实际路径
+```shell
+pwd
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305110826145.png)
+###### 27. 调用nginx命令看看
+```shell
+nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305111004497.png)
+之前如果启动过，就会出现这种情况
+
+
+###### 28. 查看Nginx进程
+```shell
+ps -ef|grep nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305111141985.png)
+###### 29.  停止Nginx服务
+```shell
+nginx -s stop
+```
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305111506596.png)
+###### 30.  再次查看Nginx进程
+```shell
+ps -ef|grep nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305111558152.png)
+可见nginx已经停止
+###### 31.  查看nginx安装目录
+```shell
+cd /usr/local/nginx/
+```
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305112754889.png)
+###### 32.  进入conf目录
+```shell
+cd conf/
+```
+并查看
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305112932914.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+
+###### 33.  用vim查看nginx主配置文件
+```shell
+vim nginx.conf
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305113233766.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+
+如果对vim不熟，移步[此博文](https://blog.csdn.net/qinfuan2017/article/details/79728906)
+从配置可以看见，nginx默认启动80端口，然后将所有的路径指向到root根路径下的html文件夹，具体位置，如下
+```shell
+cd ..
+```
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305113659279.png)
+查看此文件夹内容
+```shell
+cd ..
+```
+```shell
+ll
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305113825330.png)
+有2个页面
+###### 34.  再次启动nginx服务
+```shell
+nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305114014774.png)
+
+###### 35.  使用Chrom远程访问该服务器
+地址栏直接键入IP地址，出现下方页面，说明部署Nginx成功
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305114213237.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+
+###### 36.  创建一个nginx配置
+此文件什么都不写
+```shell
+vim nginx.conf
+```
+点`esc`键，输入`:wq`保存该文件并退出
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305121906256.png)
+
+###### 37.  进入nginx安装目录下的配置文件
+```shell
+vim /usr/local/nginx/conf/nginx.conf
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305122335355.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305122358651.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+在vim中，敲键盘`i`键，进行编辑
+将user指定为root，因为我们是root登录的
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305122629511.png)
+在文件末尾追加
+```shell
+include /root/nginx/*.conf;
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305122951561.png)
+此后，所有/root/nginx/下所有.conf的文件将被合并到本配置文件中。
+敲`esc`，输入`:wq`保存并退出
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305123344198.png)
+###### 38.  编辑自定义的nginx.conf文件
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305123839432.png)
+保存并退出
+###### 39.  创建hzyupload目录
+```shell
+mkdir hzyupload
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305124141216.png)
+
+###### 40.  端口问题
+我们自定义的nginx.conf的80端口和Nginx默认自带的80端口冲突了，现在修改主配置文件默认端口为自定义的9988
+```shell
+vim /usr/local/nginx/conf/nginx.conf
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305124709952.png)
+
+###### 41.  继续编辑自定义的nginx.conf文件
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305125352597.png)
+不进行缓存：
+```shell
+add_header Cache-Control "no-cache, must-revalidate"; 
+```
+添加对跨域支持：
+```shell
+ location / {
+  add_header Access-Control-Allow-Origin *;
+ } 
+```
+键入`:wq`保存退出
+
+
+###### 42.  在hzyupload添加一个index.html
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305125837891.png)
+```shell
+vim index.html
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305130020119.png)
+保存并退出
+###### 43.  检查一下配置文件
+```shell
+nginx -t
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305130241522.png)
+ok和successful，说明我们配置的没有问题
+###### 44.  重启Nginx
+```shell
+ nginx -s reload
+```
+并查看进程
+```shell
+ps -ef|grep nginx
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305134115494.png)
+
+###### 45.  浏览器查看
+刷新页面，参考上方第42条index.html输入的内容
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305134238235.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+
+###### 46.  上传自己的资源到Nginx上面
+使用FileZilla
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305150242290.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+###### 47. 文件保护
+```shell
+vim nginx.conf
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020030515074247.png)
+配置`autoindex off; `或者直接注释掉它
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200305150912408.png)
+重启nginx，在浏览器中，如果访问nginx的ip或者文件路径错误，将出现
+`403 Forbidden` 或`404`
+
+#### 零碎知识片段
+在vim中，键入`:set nu`表示给显示行号

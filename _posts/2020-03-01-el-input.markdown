@@ -1,0 +1,37 @@
+---
+layout: post
+title: Element：设置el-input宽度大小
+date: 2020-03-01 21:32:24.000000000 +09:00
+---
+> 如何设置el-input输入框的的长度并对齐label？
+
+下方审批人输入框太长，导致界面像假村花东施
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200229161812281.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+> 解决办法：
+使用Layout中的`col`组件，并设置其`:span`属性大小，`:span`为24时，铺满赤道、为8时就是占1/3，其他以此类推。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200229162845302.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+```html
+      <el-form-item label="审批人">
+        <el-col :span="8">
+          <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+        </el-col>
+      </el-form-item>
+```
+如果在`el-col`外面再给外衣`el-row`也是不错也~
+
+回眸一望，上方图中的input输入框好像没有对齐，查阅文档可知，Form组件中有个叫`label-width`的属性，设置成100px看看
+```html
+    <el-form
+      :label-position="labelPosition"
+      :inline="false"
+      :model="formInline"
+      label-width="100px"
+      class="demo-form-inline"
+    >
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200229164159907.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1hpZGlhbjI4NTA=,size_16,color_FFFFFF,t_70)
+嗯哼？效果还可以，如果设置成自动适配`label-width="auto"`是最好
+
+> 来源于自己的博客
+
+[https://blog.csdn.net/Xidian2850/article/details/104576398](https://blog.csdn.net/Xidian2850/article/details/104576398)
